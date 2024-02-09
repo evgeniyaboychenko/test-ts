@@ -1,0 +1,8 @@
+.table__row {
+	background-color: yellow;
+}
+
+
+.table__row.is-active {
+	background-color: red;
+}
