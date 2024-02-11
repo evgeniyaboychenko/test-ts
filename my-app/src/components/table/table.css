@@ -10,18 +10,17 @@ table th {
 }
 
 table thead th {
-  /* @extend %text-subtitle; */
   min-width: 150px;
   text-align: left;
+  font-size: 16px;
+  text-transform: uppercase;
 }
 
 table tbody th {
-  /* @extend %text-body-bold; */
   text-align: left;
 }
 
 table td {
-  /* @extend %text-body; */
   min-width: 200px;
   padding: 10px;
   color: black;

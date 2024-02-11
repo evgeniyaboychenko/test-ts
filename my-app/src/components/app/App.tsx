@@ -1,119 +1,130 @@
-import './App.css';
-import Table from './../table/table';
-import Button from './../button/button';
-import { useState } from 'react';
-import { useReducer, useEffect } from 'react';
-import { reducer, initialState, ActionCreator, ActionType } from '../../reducer/reducer';
-import axios from 'axios';
+import "./App.css";
+import Table from "./../table/table";
+import Button from "./../button/button";
+import { useReducer, useEffect } from "react";
+import {
+  reducer,
+  initialState,
+  ActionCreator,
+} from "../../reducer/reducer";
+import { TypeSort } from "../../const";
+import axios from "axios";
 
 
-type Props = {
-  id: number,
-  name: string
-}
-
-
-// type typeSort = {
-//   DESCENDING: 'DESCENDING',
-//   ASCENDING: 'ASCENDING',
-//   DEFAULT: 'DEFAULT'
-// }
-
-// type user: {}[] = {
-//   id: number,
-//   name: string
-// }
-
-
-const TypeSort = {
-  DESCENDING: 'DESCENDING',
-  ASCENDING: 'ASCENDING',
-  DEFAULT: 'DEFAULT'
+type SortDirections = {
+  id: string;
+  name: string;
+  birthday: string;
 };
 
 const App = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const [state, dispatch] = useReducer(reducer,initialState);
+  const {
+    usersList,
+    loading,
+    error,
+    isFilterByAge,
+    sortField,
+    activeIndex,
+    sortDirections,
+  } = state;
 
-  const { usersList, loading, error} = state;
-
-  console.log(usersList, loading, error);
-  // debugger;
   useEffect(() => {
     dispatch(ActionCreator.requestInit(loading));
 
     const loadUsersList = async () => {
       try {
-        let responce = await axios('https://mocki.io/v1/a0bd24a9-7d83-4b7f-997d-6193d6a3a726');
-        if(responce.status === 200 ) {
+        let responce = await axios(
+          "https://mocki.io/v1/a0bd24a9-7d83-4b7f-997d-6193d6a3a726"
+        );
+        if (responce.status === 200) {
           dispatch(ActionCreator.requestSuccess(responce.data));
         }
-      }
-      catch(err) {
-        console.error(err)
-        dispatch(ActionCreator.requestError(loading, error ));
+      } catch (err) {
+        console.error(err);
+        dispatch(ActionCreator.requestError(loading, error));
       }
     };
     loadUsersList();
-  }, [])  
+  }, []);
 
+  const handleRowClick = (index: number) => {
+    dispatch(ActionCreator.changeActiveIndex(index));
+  };
 
-  const arr: Props[] = [
-  {
-    id: 22,
-    name: 'iwwwww',
-  },
-  {
-    id: 22345345,
-    name: 'sasaererwwwww',
-  },
-  {
-    id: 34,
-    name: 'ererwwwww',
-  },
-  {
-    id: 3,
-    name: 'oererwwwww',
-  },
-];
+  const handleCheckBoxClick = (isCheck: boolean) => {
+    dispatch(ActionCreator.changeFilter(isCheck));
+  };
 
+  const handleButtonSortClick = (
+    sortDirections: SortDirections,
+    sortField: string
+  ) => {
+    dispatch(ActionCreator.changeSortField(sortField));
+    dispatch(ActionCreator.changeSortDirections({ sortDirections, sortField }));
+  };
 
-  const [typeSort , setTypeSort] = useState(TypeSort.DESCENDING);
-  const [nameField , setFieldName] = useState('');
-  const [isFilterByAge , setFilter] = useState(false);
-
-  function handleClick(typeSort:string, field:string) {
-    setTypeSort((typeSort === TypeSort.DESCENDING) ?  TypeSort.ASCENDING: TypeSort.DESCENDING);
-    setFieldName(field);
-  }
-
-  function handleFilterClick(check:boolean) {
-    setFilter(check)
-  }
-
-	return (
+  return (
     <div className="App">
       <>
-        {
-          loading? 
-            (<p>идет загрузка</p>) : 
-              error ? 
-                (<p>error</p>) :     
-                  ( <>
-                    <Table usersList={usersList} typeSort={typeSort}  field={nameField} isFilterByAge={isFilterByAge}/>
-                    <Button text={'ddddd'} onButtonClick={()=>handleClick(typeSort,'id' )}>сортировка по id {typeSort === 'DESCENDING' ? 'по убыв': 'по возр'}</Button>
-                    <Button text={'ddddd'} onButtonClick={()=>handleClick(typeSort,'name' )}>сортировка по имени {typeSort === 'DESCENDING' ? 'по убыв': 'по возр'}</Button>
-                    <label> 18 лет
-                      <input type="checkbox" onChange={(evt) => {
-                        handleFilterClick(evt.target.checked)
-                      }} /> 
-                    </label>
-                    </>
-                  )
-        }
+        {loading ? (
+          <p>идет загрузка</p>
+        ) : error ? (
+          <p>error</p>
+        ) : (
+          <>
+            <Table
+              usersList={usersList}
+              sortDirections={sortDirections}
+              field={sortField}
+              isFilterByAge={isFilterByAge}
+              activeIndex={activeIndex}
+              handleRowClick={handleRowClick}
+            />
+
+            <Button
+              handleButtonSortClick={() =>
+                handleButtonSortClick(sortDirections, "id")
+              }
+            >
+              сортировать по id по возрастанию
+            </Button>
+            <Button
+              handleButtonSortClick={() =>
+                handleButtonSortClick(sortDirections, "name")
+              }
+            >
+              сортировать по name
+              {(sortDirections.name !== TypeSort.ASCENDING)
+                ? " по возрастанию"
+                : " по убыванию"}
+            </Button>
+            <Button
+              handleButtonSortClick={() =>
+                handleButtonSortClick(sortDirections, "birthday")
+              }
+            >
+              сортировать по birthday
+              {(sortDirections.birthday !== TypeSort.ASCENDING)
+                ? " по возрастанию"
+                : " по убыванию"}
+            </Button>
+            <label>
+              {" "}
+              Старше 18 лет
+              <input
+                type="checkbox"
+                onChange={(evt) => {
+                  handleCheckBoxClick(evt.target.checked);
+                }}
+              />
+            </label>
+          </>
+        )}
       </>
     </div>
   );
-}
+};
 
 export default App;

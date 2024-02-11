@@ -1,34 +1,36 @@
-import { useState } from 'react';
-import './tr.css';
+import "./tr.css";
 
 type Props = {
-  id: number,
-  name: string,
-  phone: string,
-  birthday: string,
-  username: string,
-  email: string,
-  website: string,
-}
+  id: number;
+  name: string;
+  phone: string;
+  birthday: string;
+  username: string;
+  email: string;
+  website: string;
+  activeIndex: number;
+  handleRowClick: (index: number) => void;
+};
 
-const Tr = (props:Props) => {
-  const [isActive, setActive] = useState(false);
-  
-  function handleClick(isActive:boolean) {
-    setActive(!isActive);
-  }
-
+const Tr = (props: Props) => {
+  const { id, name, phone, birthday, username, email, website, activeIndex } =
+    props;
   return (
-      <tr className={`table__row ${isActive? 'is-active': ''}`}  onClick={()=> {handleClick(isActive)}}>
-          <td>{props.id}</td>
-          <td>{props.name}</td>
-          <td>{props.birthday}</td>
-          <td>{props.phone}</td>
-          <td>{props.username}</td>
-          <td>{props.email}</td>
-          <td>{props.website}</td>
-      </tr>
+    <tr
+      className={`table__row ${id === activeIndex ? "is-active" : ""}`}
+      onClick={() => {
+        props.handleRowClick(id);
+      }}
+    >
+      <td>{id}</td>
+      <td>{name}</td>
+      <td>{birthday}</td>
+      <td>{phone}</td>
+      <td>{username}</td>
+      <td>{email}</td>
+      <td>{website}</td>
+    </tr>
   );
-}
+};
 
 export default Tr;

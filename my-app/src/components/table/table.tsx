@@ -1,44 +1,72 @@
-import './table.css';
-import Tr from './../tr/tr';
+import "./table.css";
+import Tr from "./../tr/tr";
 import * as React from "react";
-import { useState } from 'react';
+import { TypeSort } from "../../const";
 
-type Props = {
-  id: number,
-  name: string,
-  phone: string,
-  birthday: string,
-  username: string,
-  email: string,
-  website: string,
-  // handle: () => void,
-  // isActive: boolean,
-}
-
-const TypeSort = {
-  DESCENDING: 'DESCENDING',
-  ASCENDING: 'ASCENDING',
-  DEFAULT: 'DEFAULT'
+type UserList = {
+  id: number;
+  name: string;
+  phone: string;
+  birthday: string;
+  username: string;
+  email: string;
+  website: string;
 };
 
+type SortDirections = {
+  id: string;
+  name: string;
+  birthday: string;
+};
 
-const sortList = (list:Props[], typeSort: string , field:string) => {
-  switch (typeSort) {
-    case (TypeSort.DEFAULT):
-      return list;
-    case (TypeSort.ASCENDING):
-      return list.sort((a, b) => a[field as keyof Props] > b[field as keyof Props] ? 1 : -1);
-    case (TypeSort.DESCENDING):
-      return list.sort((a, b) => a[field as keyof Props] < b[field as keyof Props] ? 1 : -1);
+const sortList = (
+  list: UserList[],
+  sortDirections: SortDirections,
+  sortField: "id" | "name" | "birthday"
+) => {
+  switch (sortDirections[sortField]) {
+    case TypeSort.ASCENDING:
+      return list.sort((a, b) =>
+        a[sortField as keyof UserList] > b[sortField as keyof UserList] ? 1 : -1
+      );
+    case TypeSort.DESCENDING:
+      return list.sort((a, b) =>
+        a[sortField as keyof UserList] < b[sortField as keyof UserList] ? 1 : -1
+      );
   }
   return list;
 };
 
-const Table = (props:{usersList:Props[], typeSort: string, field: string, isFilterByAge: boolean}) => {
-  const {usersList, typeSort, field , isFilterByAge}=props;
+const filterListByAge = (list: UserList[]) => {
+  return list.filter((item) => {
+    const now = new Date();
+    const year = now.getFullYear() - 18;
+    const t = now.setFullYear(year);
+    const diff = t - Date.parse(item.birthday);
+    if (diff > 0) return item.birthday;
+    else return null;
+  });
+};
+
+const Table = (props: {
+  usersList: UserList[];
+  sortDirections: SortDirections;
+  field: "id" | "name" | "birthday";
+  isFilterByAge: boolean;
+  activeIndex: number;
+  handleRowClick: any;
+}) => {
+  const {
+    usersList,
+    sortDirections,
+    field,
+    isFilterByAge,
+    handleRowClick,
+    activeIndex,
+  } = props;
   let copyArrayList = usersList.slice();
-  if(isFilterByAge) {
-    copyArrayList = usersList.filter(a => a.id === 22)
+  if (isFilterByAge) {
+    copyArrayList = filterListByAge(copyArrayList);
   }
 
   return (
@@ -55,8 +83,9 @@ const Table = (props:{usersList:Props[], typeSort: string, field: string, isFilt
         </tr>
       </thead>
       <tbody>
-        {sortList(copyArrayList, typeSort, field).map(item => 
-          <Tr key = {item.id} 
+        {sortList(copyArrayList, sortDirections, field).map((item) => (
+          <Tr
+            key={item.id}
             id={item.id}
             name={item.name}
             birthday={item.birthday}
@@ -64,10 +93,13 @@ const Table = (props:{usersList:Props[], typeSort: string, field: string, isFilt
             email={item.email}
             website={item.website}
             phone={item.phone}
-        />)}
+            activeIndex={activeIndex}
+            handleRowClick={handleRowClick}
+          />
+        ))}
       </tbody>
     </table>
   );
-}
+};
 
 export default Table;

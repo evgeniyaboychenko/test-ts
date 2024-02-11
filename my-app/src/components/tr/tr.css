@@ -1,8 +1,9 @@
 .table__row {
-	background-color: yellow;
+	background-color: lightyellow;
+	cursor: pointer;
 }
 
 
 .table__row.is-active {
-	background-color: red;
+	background-color:lightblue;
 }
