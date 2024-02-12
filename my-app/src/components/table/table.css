@@ -1,7 +1,7 @@
 table {
   display: block;
   overflow-x: auto;
-  border-spacing: 0 30px;
+  border-spacing: 0 15px;
 }
 
 table th {
@@ -27,6 +27,3 @@ table td {
   text-align: left;
 }
 
-table tr {
-  border: 1px solid green;
-}

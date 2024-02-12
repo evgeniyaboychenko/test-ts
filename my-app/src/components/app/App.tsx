@@ -2,20 +2,9 @@ import "./App.css";
 import Table from "./../table/table";
 import Button from "./../button/button";
 import { useReducer, useEffect } from "react";
-import {
-  reducer,
-  initialState,
-  ActionCreator,
-} from "../../reducer/reducer";
+import { reducer, initialState, ActionCreator } from "../../reducer/reducer";
 import { TypeSort } from "../../const";
 import axios from "axios";
-
-
-type SortDirections = {
-  id: string;
-  name: string;
-  birthday: string;
-};
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -57,12 +46,9 @@ const App = () => {
     dispatch(ActionCreator.changeFilter(isCheck));
   };
 
-  const handleButtonSortClick = (
-    sortDirections: SortDirections,
-    sortField: string
-  ) => {
+  const handleButtonSortClick = (sortField: string) => {
     dispatch(ActionCreator.changeSortField(sortField));
-    dispatch(ActionCreator.changeSortDirections({ sortDirections, sortField }));
+    dispatch(ActionCreator.changeSortDirections(sortField));
   };
 
   return (
@@ -83,30 +69,20 @@ const App = () => {
               handleRowClick={handleRowClick}
             />
 
-            <Button
-              handleButtonSortClick={() =>
-                handleButtonSortClick(sortDirections, "id")
-              }
-            >
+            <Button handleButtonSortClick={() => handleButtonSortClick("id")}>
               сортировать по id по возрастанию
             </Button>
-            <Button
-              handleButtonSortClick={() =>
-                handleButtonSortClick(sortDirections, "name")
-              }
-            >
+            <Button handleButtonSortClick={() => handleButtonSortClick("name")}>
               сортировать по name
-              {(sortDirections.name !== TypeSort.ASCENDING)
+              {sortDirections.name !== TypeSort.ASCENDING
                 ? " по возрастанию"
                 : " по убыванию"}
             </Button>
             <Button
-              handleButtonSortClick={() =>
-                handleButtonSortClick(sortDirections, "birthday")
-              }
+              handleButtonSortClick={() => handleButtonSortClick("birthday")}
             >
               сортировать по birthday
-              {(sortDirections.birthday !== TypeSort.ASCENDING)
+              {sortDirections.birthday !== TypeSort.ASCENDING
                 ? " по возрастанию"
                 : " по убыванию"}
             </Button>

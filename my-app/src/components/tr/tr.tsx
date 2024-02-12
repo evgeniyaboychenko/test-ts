@@ -1,6 +1,6 @@
 import "./tr.css";
 
-type Props = {
+interface Props {
   id: number;
   name: string;
   phone: string;
@@ -10,16 +10,25 @@ type Props = {
   website: string;
   activeIndex: number;
   handleRowClick: (index: number) => void;
-};
+}
 
 const Tr = (props: Props) => {
-  const { id, name, phone, birthday, username, email, website, activeIndex } =
-    props;
+  const {
+    id,
+    name,
+    phone,
+    birthday,
+    username,
+    email,
+    website,
+    activeIndex,
+    handleRowClick,
+  } = props;
   return (
     <tr
       className={`table__row ${id === activeIndex ? "is-active" : ""}`}
       onClick={() => {
-        props.handleRowClick(id);
+        handleRowClick(id);
       }}
     >
       <td>{id}</td>

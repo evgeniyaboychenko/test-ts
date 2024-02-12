@@ -1,6 +1,8 @@
 const TypeSort = {
 	DESCENDING: 'DESCENDING',
 	ASCENDING: 'ASCENDING',
-  };
+};
 
-  export {TypeSort};
+const BOUNDARY_AGE = 18;
+
+export {TypeSort, BOUNDARY_AGE};

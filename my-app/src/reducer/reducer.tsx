@@ -1,18 +1,10 @@
 import { TypeSort } from "./../const";
-
+import { SortDirections, SortingField } from "./../types";
 
 type action = {
   type: string;
   payload: any;
 };
-
-type SortDirections = {
-  id: string;
-  name: string;
-  birthday: string;
-};
-
-type Sorting = 'id'|'name'| 'birthday';
 
 const initialState = {
   loading: false,
@@ -44,18 +36,18 @@ const ActionType = {
 
 const changeDirection = (
   sortDirections: SortDirections,
-  sortField: "id" | "name" | "birthday" |""
+  sortField: SortingField
 ) => {
-  if (sortField !== '') {
-  if (sortField === "id") {
-	sortDirections[sortField] =TypeSort.ASCENDING;
-  } else {
-	sortDirections[sortField] = sortDirections[sortField] === TypeSort.ASCENDING
-      ? TypeSort.DESCENDING
-      : TypeSort.ASCENDING;
+  if (sortField !== "") {
+    if (sortField === "id") {
+      sortDirections[sortField] = TypeSort.ASCENDING;
+    } else {
+      sortDirections[sortField] =
+        sortDirections[sortField] === TypeSort.ASCENDING
+          ? TypeSort.DESCENDING
+          : TypeSort.ASCENDING;
+    }
   }
-	}
-  console.log('ttt',sortDirections);
 };
 
 const ActionCreator = {
@@ -67,12 +59,9 @@ const ActionCreator = {
     type: ActionType.CHANGE_FILTER,
     payload: isFilterByAge,
   }),
-  changeSortDirections: (dataSort: {
-    sortDirections: SortDirections;
-    sortField: string;
-  }) => ({
+  changeSortDirections: (sortField: string) => ({
     type: ActionType.CHANGE_SORT_DIRECTIONS,
-    payload: dataSort,
+    payload: sortField,
   }),
   changeSortField: (sortField: string) => ({
     type: ActionType.CHANGE_SORT_FIELD,
@@ -97,28 +86,23 @@ const ActionCreator = {
   }),
 };
 
-
 const reducer = (state = initialState, action: action) => {
   switch (action.type) {
     case ActionType.CHANGE_ACTIVE_INDEX:
       return { ...state, activeIndex: action.payload };
+
     case ActionType.CHANGE_FILTER:
       return { ...state, isFilterByAge: action.payload };
 
     case ActionType.CHANGE_SORT_DIRECTIONS:
-		let sortField:Sorting = action.payload.sortField;
-		console.log('22222', state.sortDirections[sortField], sortField);
-		let sortDirections = {...state.sortDirections};
-		changeDirection(
-			sortDirections,
-            sortField
-          );
-		console.log('11111111', sortDirections, sortField);
+      let sortField: SortingField = action.payload;
+      let sortDirections = { ...state.sortDirections };
+      changeDirection(sortDirections, sortField);
       return {
         ...state,
         sortDirections: sortDirections,
-        sortField: sortField
       };
+
     case ActionType.CHANGE_SORT_FIELD:
       return { ...state, sortField: action.payload };
 

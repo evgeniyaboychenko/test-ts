@@ -1,10 +1,10 @@
 import "./button.css";
 import { ReactNode } from "react";
 
-type Props = {
+interface Props {
   children?: ReactNode;
   handleButtonSortClick: () => void;
-};
+}
 
 const Button = ({ children, ...props }: Props) => {
   const { handleButtonSortClick } = props;
